@@ -3,15 +3,24 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
-	public BoardManager boardScript;
+	public static GameManager instance = null;
 
-	// Use this for initialization
-	void Start () {
-		boardScript.SetupScene ();
+	private BoardManager boardScript;
+
+	void Awake ()
+	{
+		if (instance == null)
+			instance = this;
+		else if (instance != this)
+			Destroy (gameObject);
+
+		DontDestroyOnLoad (gameObject);
+		boardScript = GetComponent<BoardManager> ();
+		InitGame ();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	void InitGame()
+	{
+		boardScript.SetupScene ();
 	}
 }
