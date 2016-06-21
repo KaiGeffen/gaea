@@ -41,6 +41,7 @@ public class BoardManager : MonoBehaviour {
 	{
 		boardHolder = new GameObject ("Board").transform;
 
+		// BACKGROUND TILES
 		for (int x = 0; x < columns; x++) {
 			for (int y = 0; y < rows; y++) {
 				GameObject toInstantiate = floorTiles[Random.Range (0, floorTiles.Length)];
@@ -51,8 +52,39 @@ public class BoardManager : MonoBehaviour {
 		}
 	}
 
+	// NOTE(kgeffen) This code was mostly copied, I don't like that this method removes from list
+	// should be done elsewhere to avoid confusion
+	Vector3 RandomPosition ()
+	{
+		int randomIndex = Random.Range (0, gridPositions.Count);
+		Vector3 randomPosition = gridPositions [randomIndex];
+		gridPositions.RemoveAt (randomIndex);
+
+		return randomPosition;
+	}
+
+	// accepts and array of game objects to choose from along with a miniumu and maximum
+	// range for the number of objects to create.
+	void LayoutObjectAtRandom (GameObject[] tileArray, int minimum, int maximum)
+	{
+		// Number of objects to create
+		int objectCount = Random.Range (minimum, maximum);
+
+		for (int i = 0; i < objectCount; i++)
+		{
+			Vector3 randomPosition = RandomPosition ();
+			GameObject tileChoice = tileArray [Random.Range (0, tileArray.Length)];
+			Instantiate (tileChoice, randomPosition, Quaternion.identity);
+		}
+	}
+
 	public void SetupScene () {
 		BoardSetup ();
+
+		InitialiseList ();
+
+		// TODO(kgeffen) unnammed constants tho
+		LayoutObjectAtRandom (enemyTiles, 1, 3);
 
 	}
 
